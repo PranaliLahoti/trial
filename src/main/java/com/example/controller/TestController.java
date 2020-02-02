@@ -152,7 +152,8 @@ public class TestController implements CommandLineRunner{
 	
 		try {
 			Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/dashboard", "postgres", "admin");
-			if(user.getrecId()=="")
+			System.out.println("Receiver id:"+user.getrecId());
+			if(user.getrecId()==null)
 			{
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
 		Date date = new Date();  
