@@ -1,6 +1,5 @@
 package com.example.controller;
 
-
 /*import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -35,7 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.Date;  
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +42,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
-
+import java.util.Random;
 
 import com.example.model.ParcelDatabase;
 
@@ -75,16 +74,28 @@ public class TestController implements CommandLineRunner{
 
     }
     
-	void sendEmailCreate(String mail,String ParcelID, String cname,String r_time,String empname){
+	void sendEmailCreate(String mail,String ParcelID, String cname,String r_time,String empname,String otp){
 		SimpleMailMessage msg = new SimpleMailMessage();
 		msg.setTo(mail);
         msg.setSubject("Parcel Received");
-        msg.setText("Hello "+empname+"!! \n Your Parcel of "+cname+" has been received by security guard.\n Parcel ID: "+ParcelID+" at time "+r_time);
+        msg.setText("Hello "+empname+"!! \n Your Parcel of "+cname+" has been received by security guard.\n Parcel ID: "+ParcelID+" at time "+r_time+"\n Your OTP is "+otp);
 
         javaMailSender.send(msg);
 
 
 	}
+
+	private static char[] generateOTP() {
+		String numbers = "1234567890";
+		Random random = new Random();
+		char[] otp = new char[4];
+  
+		for(int i = 0; i< 4 ; i++) {
+		   otp[i] = numbers.charAt(random.nextInt(numbers.length()));
+		}
+		
+		return otp;
+	 }
 
 	private  List<ParcelDatabase> ParcelDatabases = createList();
 
@@ -99,8 +110,8 @@ public class TestController implements CommandLineRunner{
 		try (Connection conn = DriverManager.getConnection(
 			"jdbc:postgresql://127.0.0.1:5433/dashboard", "postgres", "admin");
 			
-		 PreparedStatement preparedStatement = conn.prepareStatement("Select *from public.\"Parcel_Details\" ")) {
-		//	preparedStatement.setString(1,"Received");
+		 PreparedStatement preparedStatement = conn.prepareStatement("Select *from public.\"Parcel_Details\" where \"Status\"= ? ")) {
+			preparedStatement.setString(1,"Received");
 			System.out.println("here1");
 		ResultSet resultSet = preparedStatement.executeQuery();
 			System.out.println("here2");
@@ -153,6 +164,7 @@ public class TestController implements CommandLineRunner{
 		try {
 			Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/dashboard", "postgres", "admin");
 			System.out.println("Receiver id:"+user.getrecId());
+
 			if(user.getrecId()==null)
 			{
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
@@ -180,7 +192,10 @@ public class TestController implements CommandLineRunner{
 			
 		}
 		ParcelDatabases.add(user);
-	    preparedStatement = conn.prepareStatement("insert into public.\"Parcel_Details\" (\"ParcelID\",\"Note\",\"EmpID\",\"Company_name\",\"Status\",\"Receive_Time\",\"RackNo\") values(?,?,?,?,?,?,?)");
+		char[] a=generateOTP();
+		String o = new String(a);
+		System.out.println(o);
+	    preparedStatement = conn.prepareStatement("insert into public.\"Parcel_Details\" (\"ParcelID\",\"Note\",\"EmpID\",\"Company_name\",\"Status\",\"Receive_Time\",\"RackNo\",\"otp\") values(?,?,?,?,?,?,?,?)");
 		preparedStatement.setString(1, user.getParcelID());
 			preparedStatement.setString(2, user.getnote());
 			preparedStatement.setString(3, user.getEmpId());
@@ -188,9 +203,10 @@ public class TestController implements CommandLineRunner{
 			preparedStatement.setString(5,user.getstatus());
 			preparedStatement.setString(6,user.getr_time());
 			preparedStatement.setString(7,user.getrack());
+			preparedStatement.setString(8,o);
 			preparedStatement.executeUpdate();
 
-			sendEmailCreate(mail,user.getParcelID(),user.getcname(),user.getr_time(),empname);
+			sendEmailCreate(mail,user.getParcelID(),user.getcname(),user.getr_time(),empname,o);
 			
 	}
 	else
@@ -198,13 +214,32 @@ public class TestController implements CommandLineRunner{
 		
 		System.out.println("*********************"+user.getrecId());
 		System.out.println("*********************"+user.getParcelID());
+		//System.out.println("++++++++++++++++++++++++"+user.getotp());
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
+
+	/*	PreparedStatement preparedStatement=conn.prepareStatement("select \"otp\" from public.\"Parcel_Details\" where \"ParcelID\" = ?");
+		preparedStatement.setString(1, user.getParcelID());
+		ResultSet resultSet = preparedStatement.executeQuery();
+		String genotp="";
+		while (resultSet.next()) {
+
+		
+			genotp=resultSet.getString("otp");
+			
+						
+		}
+		System.out.println(genotp);
+		String ot=user.getotp();*/
+		//if(genotp.equals(ot))
+		//{
 		Date date = new Date();  
 		System.out.println(formatter.format(date));  
 		user.setd_time(formatter.format(date));
 		user.setstatus("Delivered");
 
-		PreparedStatement preparedStatement = conn.prepareStatement("update public.\"Parcel_Details\" set \"RecId\"= ?, \"Deliver_Time\"=?, \"Status\"=? where \"ParcelID\" = ? ");
+		PreparedStatement preparedStatement;
+		ResultSet resultSet;
+		preparedStatement = conn.prepareStatement("update public.\"Parcel_Details\" set \"RecId\"= ?, \"Deliver_Time\"=?, \"Status\"=? where \"ParcelID\" = ? ");
 		preparedStatement.setString(1, user.getrecId());
 		preparedStatement.setString(2, user.getd_time());
 		preparedStatement.setString(3, user.getstatus());
@@ -214,7 +249,7 @@ public class TestController implements CommandLineRunner{
 
 		preparedStatement=conn.prepareStatement("select \"EmpID\" from public.\"Parcel_Details\" where \"ParcelID\" = ?");
 		preparedStatement.setString(1, user.getParcelID());
-		ResultSet resultSet = preparedStatement.executeQuery();
+	    resultSet = preparedStatement.executeQuery();
 		String employeeid="";
 		while (resultSet.next()) {
 
@@ -270,6 +305,11 @@ public class TestController implements CommandLineRunner{
 			}
 
 		}
+		
+	//}else
+	/*{
+		System.out.print("OTP did not match.Try Again");
+	}	*/
 		
 	}
 			
