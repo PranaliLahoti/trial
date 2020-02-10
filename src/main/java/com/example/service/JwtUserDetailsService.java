@@ -25,12 +25,15 @@ private PasswordEncoder bCryptPasswordEncoder;
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
 		final String Sql = "Select *from public.\"User_Credentials\" where username = '" + username+"';";
 		System.out.println(Sql);
+		
 		Connection conn;
 		try{
-		conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/dashboard", "postgres", "admin");
+		conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/dashboard", "postgres", "admin");
 		final PreparedStatement preparedStatement = conn.prepareStatement(Sql);
+		System.out.println("I am here");
 		final ResultSet resultSet = preparedStatement.executeQuery();	
 		if (resultSet.next() == true) {	
+			System.out.println("I am here1");
 				final String password = resultSet.getString("password");
 				final String EncodedPass = bCryptPasswordEncoder.encode(password);
 				System.out.println("SQL encoded:"+EncodedPass);

@@ -16,6 +16,7 @@ public class ParcelDatabase {
 	private String recId;
 	private String recname;
 	private String recphone;
+	private String no_days;
 	public ParcelDatabase() {
 	}
 	public String getrecId()
@@ -24,6 +25,13 @@ public class ParcelDatabase {
 	}
 	public void setrecId(String recId){
 		this.recId=recId;
+	}
+	public String getno_days()
+	{
+		return no_days;
+	}
+	public void setno_days(String no_days){
+		this.no_days=no_days;
 	}
 	public String getrecname()
 	{

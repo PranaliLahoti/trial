@@ -97,7 +97,7 @@ public class TestController implements CommandLineRunner{
 		List<ParcelDatabase> ParcelDatabases=new ArrayList<ParcelDatabase>();
 		
 		try (Connection conn = DriverManager.getConnection(
-			"jdbc:postgresql://127.0.0.1:5433/dashboard", "postgres", "admin");
+			"jdbc:postgresql://127.0.0.1:5432/dashboard", "postgres", "admin");
 			
 		 PreparedStatement preparedStatement = conn.prepareStatement("Select *from public.\"Parcel_Details\" ")) {
 		//	preparedStatement.setString(1,"Received");
@@ -114,7 +114,8 @@ public class TestController implements CommandLineRunner{
 			String r_time=resultSet.getString("Receive_Time");
 			String d_time=resultSet.getString("Deliver_Time");
 			String status=resultSet.getString("Status");
-			System.out.println(id);
+			String nodays=resultSet.getString("No_Days");
+			System.out.println(nodays);
 			
 			
 			//int parcelid = resultSet.getInt("ParcelID");
@@ -130,7 +131,7 @@ public class TestController implements CommandLineRunner{
 			obj.setr_time(r_time);
 			obj.setd_time(d_time);
 			obj.setstatus(status);
-			
+			obj.setno_days(nodays);
 			//obj.setSalary(parcelid);
 			// Timestamp -> LocalDateTime
 			
@@ -151,7 +152,7 @@ public class TestController implements CommandLineRunner{
 	public ParcelDatabase create(@RequestBody ParcelDatabase user) {
 	
 		try {
-			Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/dashboard", "postgres", "admin");
+			Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/dashboard", "postgres", "admin");
 			System.out.println("Receiver id:"+user.getrecId());
 			if(user.getrecId()==null)
 			{

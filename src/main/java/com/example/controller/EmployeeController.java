@@ -31,7 +31,7 @@ public class EmployeeController {
         
 		
 		try (Connection conn = DriverManager.getConnection(
-			"jdbc:postgresql://127.0.0.1:5433/dashboard", "postgres", "admin");
+			"jdbc:postgresql://127.0.0.1:5432/dashboard", "postgres", "admin");
          PreparedStatement preparedStatement = conn.prepareStatement("Select *from public.\"Parcel_Details\" where \"EmpID\" = ? and \"Status\"=? "))
           {
             preparedStatement.setString(1,"123");
@@ -82,7 +82,7 @@ public class EmployeeController {
     public ParcelDatabase create(@RequestBody ParcelDatabase user) {
 		System.out.println("************************heresddtfy"+user.getParcelID());
 		try{
-			Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/dashboard", "postgres", "admin");
+			Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/dashboard", "postgres", "admin");
 			PreparedStatement preparedStatement=conn.prepareStatement("select \"EmpID\",\"EmpEmail\",\"EmpName\" from public.\"Employee_Database\" where \"EmpID\" =  (select \"EmpID\" from public.\"Parcel_Details\" where \"ParcelID\"=?)");
 			preparedStatement.setString(1,user.getParcelID());
 			ResultSet resultSet = preparedStatement.executeQuery();

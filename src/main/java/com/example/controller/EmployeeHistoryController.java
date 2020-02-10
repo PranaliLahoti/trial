@@ -32,7 +32,7 @@ public class EmployeeHistoryController  {
         
 		
 		try (Connection conn = DriverManager.getConnection(
-			"jdbc:postgresql://127.0.0.1:5433/dashboard", "postgres", "admin");
+			"jdbc:postgresql://127.0.0.1:5432/dashboard", "postgres", "admin");
          PreparedStatement preparedStatement = conn.prepareStatement("Select *from public.\"Parcel_Details\" where \"EmpID\" = ? and \"Status\"=? "))
           {
             preparedStatement.setString(1,"123");
