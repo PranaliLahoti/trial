@@ -17,6 +17,8 @@ public class ParcelDatabase {
 	private String recname;
 	private String recphone;
 	private String no_days;
+	private String otp;
+	private String time_diff;
 	public ParcelDatabase() {
 	}
 	public String getrecId()
@@ -126,6 +128,18 @@ public class ParcelDatabase {
 		this.empId = empId;
 	}
 
+	public String getotp(){
+		return otp;
+	}
+	public void setotp(String otp){
+		this.otp=otp;
+	}
+	public String gettime_diff(){
+		return time_diff;
+	}
+	public void settime_diff(String time_diff){
+		this.time_diff=time_diff;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -143,6 +157,7 @@ public class ParcelDatabase {
 		result = prime * result + ((recId == null) ? 0 : recId.hashCode());
 		result = prime * result + ((recname == null) ? 0 : recname.hashCode());
 		result = prime * result + ((recphone == null) ? 0 : recphone.hashCode());
+		result = prime * result + ((otp == null) ? 0 : otp.hashCode());
 	//	long temp;
 	//	temp = Double.doubleToLongBits(salary);
 	//	result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -226,7 +241,13 @@ public class ParcelDatabase {
 			if (other.recphone != null)
 				return false;
 		} else if (!recphone.equals(other.recphone))
-				return false;						
+				return false;	
+		if (otp == null) {
+			if (other.otp != null)
+					return false;
+		} else if (!otp.equals(other.otp))
+					return false;		
+				
 		if (Double.doubleToLongBits(salary) != Double.doubleToLongBits(other.salary))
 			return false;
 		return true;
