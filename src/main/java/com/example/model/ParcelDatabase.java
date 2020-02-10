@@ -17,6 +17,7 @@ public class ParcelDatabase {
 	private String recname;
 	private String recphone;
 	private String otp;
+	private String time_diff;
 	public ParcelDatabase() {
 	}
 	public String getrecId()
@@ -124,6 +125,12 @@ public class ParcelDatabase {
 	}
 	public void setotp(String otp){
 		this.otp=otp;
+	}
+	public String gettime_diff(){
+		return time_diff;
+	}
+	public void settime_diff(String time_diff){
+		this.time_diff=time_diff;
 	}
 	@Override
 	public int hashCode() {
