@@ -62,7 +62,7 @@ public class SecurityHistoryController implements CommandLineRunner {
 		List<ParcelDatabase> ParcelDatabases=new ArrayList<ParcelDatabase>();
 		
 		try (Connection conn = DriverManager.getConnection(
-			"jdbc:postgresql://127.0.0.1:5433/dashboard", "postgres", "admin");
+			"jdbc:postgresql://127.0.0.1:5432/dashboard", "postgres", "admin");
 			
 		 PreparedStatement preparedStatement = conn.prepareStatement("Select *from public.\"Parcel_Details\" where \"Status\"= ? ")) {
 			preparedStatement.setString(1,"Delivered");
@@ -121,7 +121,7 @@ public class SecurityHistoryController implements CommandLineRunner {
 	public ParcelDatabase create(@RequestBody ParcelDatabase user) {
 	
 		try {
-			Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/dashboard", "postgres", "admin");
+			Connection conn = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/dashboard", "postgres", "admin");
 			System.out.println("Receiver id:"+user.getrecId());
 
 			
